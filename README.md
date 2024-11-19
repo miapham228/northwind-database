@@ -72,13 +72,47 @@ GROUP BY c.category_name`
 Q12 Show the city, company_name, contact_name from the customers and suppliers table merged together.
 Create a column which contains 'customers' or 'suppliers' depending on the table it came from.
 
-` 
-Q13
+` select City, company_name, contact_name, 'customers' as relationship 
+from customers
+union
+select city, company_name, contact_name, 'suppliers'
+from suppliers`
 
-Q14
+Q13 Show the employee's first_name and last_name, a "num_orders" column with a count of the orders taken, and a column called "Shipped" that displays "On Time" if the order shipped_date is less or equal to the required_date, "Late" if the order shipped late.
 
-Q15
+Order by employee last_name, then by first_name, and then descending by number of orders.
 
-Q16
+`SELECT
+  e.first_name,
+  e.last_name,
+  COUNT(o.order_id) As num_orders,
+  (
+    CASE
+      WHEN o.shipped_date <= o.required_date THEN 'On Time'
+      ELSE 'Late'
+    END
+  ) AS shipped
+FROM orders o
+  JOIN employees e ON e.employee_id = o.employee_id
+GROUP BY
+  e.first_name,
+  e.last_name,
+  shipped
+ORDER BY
+  e.last_name,
+  e.first_name,
+  num_orders DESC`
+
+Q14 Show how much money the company lost due to giving discounts each year, order the years from most recent to least recent. Round to 2 decimal places
+
+`SELECT 
+ year(orders.order_date) as order_year,
+ round(sum(products.unit_price*order_details.quantity*order_details.discount),2) as discount_amount
+from order_details 
+join orders on order_details.order_id = orders.order_id
+join products on order_details.product_id = products.product_id
+group by order_year
+order by order_year DESC;`
+
 
 
